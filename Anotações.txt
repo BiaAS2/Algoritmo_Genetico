@@ -1,0 +1,6 @@
+____ .Anotações. ____
+
+O arquivo instancia.csv contém as informações dos itens possíveis para colocar na mochila
+    Primeira linha -> Capacidade da mochila (10)
+    Segunda linha -> Total de itens possíveis
+    As demais linhas -> Contém o nome, peso e benefício do item
