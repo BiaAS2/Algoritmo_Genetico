@@ -39,12 +39,12 @@ Com base nos testes realizados, o algoritmo genético foi eficaz em encontrar so
 
 **Grupo**:
 
-- Beatriz Alves
-- Bianca Mayra
-- Luana
-- Lucelho Silva
-- Renato Noronha
-- Túlio Inácio
+- [Beatriz Alves](https://www.linkedin.com/in/beatriz-alves-de-souza-789a84239/)
+- [Bianca Mayra](https://www.linkedin.com/in/bianca-mayra-de-assisaguiar-8b18b0235/)
+- [Luana]()
+- [Lucelho Silva](https://www.linkedin.com/in/lucelhosilva/)
+- [Renato Noronha](https://www.linkedin.com/in/renatonoronha/)
+- [Túlio Inácio](https://www.linkedin.com/in/t%C3%BAlio-in%C3%A1cio-767244276/)
 
 Data: **25 de outubro de 2024**
 

@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 
 
-class Plotter_Graphic:
+class Visualizer:
     def __init__(self, test_params):
         self.test_params = test_params
 

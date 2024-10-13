@@ -1,4 +1,4 @@
-class Individual:
+class Candidate:
     def __init__(self, genome):
         self.genome = genome
         self.fitness = 0

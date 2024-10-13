@@ -2,11 +2,10 @@ import csv
 import pandas as pd
 from openpyxl import load_workbook
 from openpyxl.styles import Alignment
-from Item import Item
-from Population import Population
+from .item import Item
+from .population import Population
 
-
-class KnapsackGA:
+class GeneticAlgorithm:
     def __init__(self, filename, population_size, crossover_rate, mutation_rate, num_generations):
         self.items, self.capacity = self.load_items_from_file(filename)
         self.population_size = population_size

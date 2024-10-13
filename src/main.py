@@ -1,5 +1,5 @@
-from KnapsackGA import KnapsackGA
-from Plotter_Graphic import Plotter_Graphic  # Supondo que você salvou a classe em um arquivo chamado plotter.py
+from src.genetic_algorithm import GeneticAlgorithm
+from src.visualizer import Visualizer
 
 
 def main():
@@ -18,7 +18,7 @@ def main():
     results_for_plot = []  # Lista separada para armazenar o fitness_history para os gráficos
 
     # Instancia o algoritmo genético para ler a capacidade antes do laço
-    ga = KnapsackGA(filename='instancia.csv', population_size=0, crossover_rate=0, mutation_rate=0,
+    ga = GeneticAlgorithm(filename='data/instancia.csv', population_size=0, crossover_rate=0, mutation_rate=0,
                     num_generations=0)
 
     # Imprimir a capacidade da mochila antes do laço for
@@ -26,7 +26,7 @@ def main():
     print("--------------------------------------\n")
 
     for i, (crossover, mutation, population_size, num_generations) in enumerate(test_params, start=1):
-        ga = KnapsackGA(filename='instancia.csv', population_size=population_size, crossover_rate=crossover,
+        ga = GeneticAlgorithm(filename='data/instancia.csv', population_size=population_size, crossover_rate=crossover,
                         mutation_rate=mutation, num_generations=num_generations)
 
         best_solution, fitness_history = ga.run()
@@ -54,7 +54,7 @@ def main():
     ga.save_results_to_excel(results)
 
     # Criar um objeto da classe Plotter e plotar os gráficos
-    plotter = Plotter_Graphic(test_params)
+    plotter = Visualizer(test_params)
     plotter.plot_fitness(results_for_plot)
 
 

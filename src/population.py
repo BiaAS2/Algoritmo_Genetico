@@ -1,10 +1,10 @@
 import random
-from Individual import Individual
+from .candidate import Candidate
 
 
 class Population:
     def __init__(self, size, num_genes):
-        self.individuals = [Individual(self.random_genome(num_genes)) for _ in range(size)]
+        self.individuals = [Candidate(self.random_genome(num_genes)) for _ in range(size)]
 
     def random_genome(self, num_genes):
         return [random.randint(0, 1) for _ in range(num_genes)]
@@ -40,7 +40,7 @@ class Population:
             crossover_point2 = random.randint(crossover_point, len(parent1.genome) - 1)
             child_genome = (parent1.genome[:crossover_point] +
                             parent2.genome[crossover_point:crossover_point2] + parent1.genome[crossover_point2:])
-            return Individual(child_genome)
+            return Candidate(child_genome)
         return parent1
 
     def mutate(self, individual, mutation_rate):
