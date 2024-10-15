@@ -1,60 +1,51 @@
+from knapsack_problem import KnapsackProblem
 from genetic_algorithm import GeneticAlgorithm
-from visualizer import Visualizer
-
 
 def main():
-    ga = None
+    """
+    Função principal que executa o algoritmo genético para resolver o problema da mochila.
+    """
+    # Carregar o problema da mochila a partir de um arquivo
+    problem = KnapsackProblem.load_from_file("../data/instancia.csv")
 
-    # Parâmetros do teste (crossover, mutação, população, gerações)
-    test_params = [
-        (0.8, 0.1, 50, 500),
-        (0.6, 0.5, 100, 1000),
-        (0.7, 0.3, 75, 450),
-        (0.9, 0.2, 60, 600),
-        (0.5, 0.1, 80, 200),
-    ]
+    # Imprimir informações sobre o problema carregado
+    print("Problema da Mochila carregado:")
+    print(f"Capacidade da mochila: {problem.capacity}")
+    print(f"Número de itens: {len(problem.items)}")
+    print("Primeiros 5 itens:")
+    for item in problem.items[:5]:
+        print(f"{item.name}: Peso = {item.weight}, Valor = {item.value}")
+    print("...")
 
-    results = []
-    results_for_plot = []  # Lista separada para armazenar o fitness_history para os gráficos
+    # Parâmetros do algoritmo genético
+    population_size = 100
+    crossover_rate = 0.8
+    mutation_rate = 0.1
+    num_generations = 100
+    selection_method = 'tournament'
+    tournament_size = 5
+    elitism = True
 
-    # Instancia o algoritmo genético para ler a capacidade antes do laço
-    ga = GeneticAlgorithm(filename='../data/instancia.csv', population_size=0, crossover_rate=0, mutation_rate=0,
-                    num_generations=0)
+    # Criar e executar o algoritmo genético
+    ga = GeneticAlgorithm(problem, population_size, crossover_rate, mutation_rate, num_generations, selection_method, tournament_size, elitism)
+    best_solution, best_fitness = ga.run()
 
-    # Imprimir a capacidade da mochila antes do laço for
-    print(f"\nCapacidade da mochila: {ga.capacity}")
-    print("--------------------------------------\n")
+    # Imprimir a solução encontrada
+    print("\nMelhor solução encontrada:")
+    print(f"Fitness: {best_fitness}")
+    print("Itens selecionados:")
+    selected_items = [item for item, selected in zip(problem.items, best_solution) if selected]
+    for item in selected_items[:5]:  # Mostrar apenas os primeiros 5 itens selecionados
+        print(f"{item.name}: Peso = {item.weight}, Valor = {item.value}")
+    
+    if len(selected_items) > 5:
+        print(f"... e mais {len(selected_items) - 5} item(s).")
 
-    for i, (crossover, mutation, population_size, num_generations) in enumerate(test_params, start=1):
-        ga = GeneticAlgorithm(filename='../data/instancia.csv', population_size=population_size, crossover_rate=crossover,
-                        mutation_rate=mutation, num_generations=num_generations)
-
-        best_solution, fitness_history = ga.run()
-
-        # Calcule a média da aptidão após as gerações
-        average_fitness = sum(fitness_history) / len(fitness_history) if fitness_history else 0
-        best_fitness = max(fitness_history) if fitness_history else 0
-
-        # Adicione os resultados à tabela do Excel
-        results.append((i, crossover, mutation, population_size, num_generations, average_fitness, best_fitness))
-
-        # Adicione os resultados à lista para plotar, incluindo fitness_history
-        results_for_plot.append((i, crossover, mutation, population_size, num_generations, average_fitness, best_fitness, fitness_history))
-
-        # Exibir os itens selecionados
-        print(f"Teste {i} - Itens selecionados:")
-        for j, item in enumerate(ga.items):
-            if best_solution.genome[j] == 1:
-                print(f"Item {item.name}: Peso = {item.weight}, Valor = {item.value}")
-        print("--------------------------------------")
-
-    # Salvar os resultados em um arquivo Excel
-    ga.save_results_to_excel(results)
-
-    # Criar um objeto da classe Plotter e plotar os gráficos
-    plotter = Visualizer(test_params)
-    plotter.plot_fitness(results_for_plot)
-
+    total_weight = sum(item.weight for item in selected_items)
+    total_value = sum(item.value for item in selected_items)
+    print(f"\nPeso total dos itens selecionados: {total_weight}")
+    print(f"Valor total dos itens selecionados: {total_value}")
+    print(f"Capacidade da mochila: {problem.capacity}")
 
 if __name__ == "__main__":
     main()

@@ -1,60 +1,118 @@
-import csv
-import pandas as pd
-from openpyxl import load_workbook
-from openpyxl.styles import Alignment
-from item import Item
-from population import Population
+import random
 
 class GeneticAlgorithm:
-    def __init__(self, filename, population_size, crossover_rate, mutation_rate, num_generations):
-        self.items, self.capacity = self.load_items_from_file(filename)
+    """
+    Implementa um algoritmo genético para resolver o problema da mochila.
+    """
+
+    def __init__(self, problem, population_size, crossover_rate, mutation_rate, num_generations, selection_method='tournament', tournament_size=5, elitism=False):
+        """
+        Inicializa uma nova instância do algoritmo genético.
+        """
+        self.problem = problem
         self.population_size = population_size
         self.crossover_rate = crossover_rate
         self.mutation_rate = mutation_rate
         self.num_generations = num_generations
-
-    def load_items_from_file(self, filename):
-        with open(filename, 'r') as file:
-            reader = csv.reader(file)
-            capacity = int(next(reader)[0])  # Capacidade
-            num_items = int(next(reader)[0])  # Número de itens
-            items = []
-            for row in reader:
-                name, weight, value = row
-                items.append(Item(name, int(weight), int(value)))
-        return items, capacity
+        self.selection_method = selection_method
+        self.tournament_size = tournament_size
+        self.elitism = elitism
 
     def run(self):
-        population = Population(self.population_size, len(self.items))
-        best_fitness_history = []  # Para armazenar a evolução da melhor solução
-        best_solution = 0  # Definindo um valor padrão
+        """
+        Executa o algoritmo genético.
+        """
+        population = self.generate_initial_population()
+        best_solution = None
+        best_fitness = 0
 
-        for gen in range(self.num_generations):
-            population.evolve(self.items, self.capacity, self.crossover_rate, self.mutation_rate)
-            # Melhor solução da geração atual
-            best_solution = max(population.individuals,
-                                key=lambda ind: ind.calculate_fitness(self.items, self.capacity))
-            best_fitness_history.append(best_solution.fitness)
-        return best_solution, best_fitness_history
+        for generation in range(self.num_generations):
+            print(f"\nGeração {generation + 1}")
+            fitness_scores = [self.problem.evaluate_fitness(individual) for individual in population]
+            
+            if self.elitism:
+                elite = max(zip(population, fitness_scores), key=lambda x: x[1])[0]
 
-    def save_results_to_excel(self, results, filename='../data/results.xlsx'):
-        """Salva os resultados dos testes em um arquivo Excel com células centralizadas."""
-        headers = ['Teste', 'Crossover', 'Mutação', 'População', 'Gerações', 'Média da Aptidão', 'Melhor Aptidão']
+            new_population = []
+            while len(new_population) < self.population_size:
+                parent1 = self.selection(population, fitness_scores)
+                parent2 = self.selection(population, fitness_scores)
+                child = self.crossover(parent1, parent2)
+                self.mutate(child)
+                new_population.append(child)
 
-        # Cria um DataFrame a partir dos resultados
-        df = pd.DataFrame(results, columns=headers)
+            if self.elitism:
+                new_population[0] = elite
 
-        # Salva o DataFrame em um arquivo Excel
-        df.to_excel(filename, index=False)
+            population = new_population
 
-        # Carrega o arquivo Excel salvo
-        workbook = load_workbook(filename)
-        sheet = workbook.active
+            current_best = max(zip(population, fitness_scores), key=lambda x: x[1])
+            if current_best[1] > best_fitness:
+                best_solution, best_fitness = current_best
 
-        # Centraliza o conteúdo de todas as células
-        for row in sheet.iter_rows(min_row=1, max_row=sheet.max_row, min_col=1, max_col=sheet.max_column):
-            for cell in row:
-                cell.alignment = Alignment(horizontal='center', vertical='center')
+            print(f"Melhor fitness na geração {generation + 1}: {best_fitness}")
 
-        # Salva o arquivo Excel com as modificações
-        workbook.save(filename)
+        return best_solution, best_fitness
+
+    def generate_initial_population(self):
+        """
+        Gera a população inicial aleatoriamente.
+        """
+        return [[random.choice([0, 1]) for _ in range(len(self.problem.items))] for _ in range(self.population_size)]
+
+    def selection(self, population, fitness_scores):
+        """
+        Seleciona um indivíduo da população usando o método de seleção especificado.
+        """
+        if self.selection_method == 'tournament':
+            return self.tournament_selection(population, fitness_scores)
+        elif self.selection_method == 'roulette':
+            return self.roulette_selection(population, fitness_scores)
+        else:
+            raise ValueError("Invalid selection method")
+
+    def tournament_selection(self, population, fitness_scores):
+        """
+        Realiza a seleção por torneio.
+        """
+        tournament = random.sample(list(zip(population, fitness_scores)), self.tournament_size)
+        return max(tournament, key=lambda x: x[1])[0]
+
+    def roulette_selection(self, population, fitness_scores):
+        """
+        Realiza a seleção por roleta.
+        """
+        total_fitness = sum(fitness_scores)
+        pick = random.uniform(0, total_fitness)
+        current = 0
+        for individual, fitness in zip(population, fitness_scores):
+            current += fitness
+            if current > pick:
+                return individual
+
+    def crossover(self, parent1, parent2):
+        """
+        Realiza o cruzamento entre dois pais para gerar um filho.
+        """
+        if random.random() < self.crossover_rate:
+            crossover_point = random.randint(1, len(parent1) - 1)
+            child = parent1[:crossover_point] + parent2[crossover_point:]
+            
+            print("\nCruzamento realizado:")
+            print(f"Pai 1: {parent1}")
+            print(f"Pai 2: {parent2}")
+            print(f"Ponto de cruzamento: {crossover_point}")
+            print(f"Filho: {child}")
+            
+            return child
+        else:
+            print("\nCruzamento não realizado. Retornando cópia do Pai 1.")
+            return parent1.copy()
+
+    def mutate(self, individual):
+        """
+        Aplica mutação a um indivíduo.
+        """
+        for i in range(len(individual)):
+            if random.random() < self.mutation_rate:
+                individual[i] = 1 - individual[i]  # Flip the bit
