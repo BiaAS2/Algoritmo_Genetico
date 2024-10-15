@@ -1,5 +1,4 @@
-import matplotlib.pyplot as plt
-
+import matplotlib.pyplot as plt 
 
 class Visualizer:
     def __init__(self, test_params):

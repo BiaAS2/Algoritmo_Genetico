@@ -1,5 +1,5 @@
-from src.genetic_algorithm import GeneticAlgorithm
-from src.visualizer import Visualizer
+from genetic_algorithm import GeneticAlgorithm
+from visualizer import Visualizer
 
 
 def main():
@@ -18,7 +18,7 @@ def main():
     results_for_plot = []  # Lista separada para armazenar o fitness_history para os gráficos
 
     # Instancia o algoritmo genético para ler a capacidade antes do laço
-    ga = GeneticAlgorithm(filename='data/instancia.csv', population_size=0, crossover_rate=0, mutation_rate=0,
+    ga = GeneticAlgorithm(filename='../data/instancia.csv', population_size=0, crossover_rate=0, mutation_rate=0,
                     num_generations=0)
 
     # Imprimir a capacidade da mochila antes do laço for
@@ -26,7 +26,7 @@ def main():
     print("--------------------------------------\n")
 
     for i, (crossover, mutation, population_size, num_generations) in enumerate(test_params, start=1):
-        ga = GeneticAlgorithm(filename='data/instancia.csv', population_size=population_size, crossover_rate=crossover,
+        ga = GeneticAlgorithm(filename='../data/instancia.csv', population_size=population_size, crossover_rate=crossover,
                         mutation_rate=mutation, num_generations=num_generations)
 
         best_solution, fitness_history = ga.run()
@@ -36,12 +36,10 @@ def main():
         best_fitness = max(fitness_history) if fitness_history else 0
 
         # Adicione os resultados à tabela do Excel
-        results.append(
-            (i, crossover, mutation, population_size, num_generations, average_fitness, best_fitness))
+        results.append((i, crossover, mutation, population_size, num_generations, average_fitness, best_fitness))
 
         # Adicione os resultados à lista para plotar, incluindo fitness_history
-        results_for_plot.append(
-            (i, crossover, mutation, population_size, num_generations, average_fitness, best_fitness, fitness_history))
+        results_for_plot.append((i, crossover, mutation, population_size, num_generations, average_fitness, best_fitness, fitness_history))
 
         # Exibir os itens selecionados
         print(f"Teste {i} - Itens selecionados:")

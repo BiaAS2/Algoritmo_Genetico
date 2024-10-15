@@ -2,8 +2,8 @@ import csv
 import pandas as pd
 from openpyxl import load_workbook
 from openpyxl.styles import Alignment
-from .item import Item
-from .population import Population
+from item import Item
+from population import Population
 
 class GeneticAlgorithm:
     def __init__(self, filename, population_size, crossover_rate, mutation_rate, num_generations):
@@ -37,7 +37,7 @@ class GeneticAlgorithm:
             best_fitness_history.append(best_solution.fitness)
         return best_solution, best_fitness_history
 
-    def save_results_to_excel(self, results, filename='results.xlsx'):
+    def save_results_to_excel(self, results, filename='../data/results.xlsx'):
         """Salva os resultados dos testes em um arquivo Excel com células centralizadas."""
         headers = ['Teste', 'Crossover', 'Mutação', 'População', 'Gerações', 'Média da Aptidão', 'Melhor Aptidão']
 
