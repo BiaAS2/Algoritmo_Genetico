@@ -4,12 +4,12 @@ from candidate import Candidate
 
 class Population:
     def __init__(self, size, num_genes):
-        self.individuals = [Candidate(self.random_genome(num_genes)) for _ in range(size)]
+        self.individuals = [Candidate(self.random_genome(num_genes)) for _ in range(size)]  # Pode exceder a capacidade de itens levados na mochila?
 
     def random_genome(self, num_genes):
         return [random.randint(0, 1) for _ in range(num_genes)]
 
-    def evolve(self, items, capacity, crossover_rate, mutation_rate):
+    def evolve(self, items, capacity, crossover_rate, mutation_rate): # capacity é a capacidade da mochila
         next_generation = []
         for _ in range(len(self.individuals)):
             parent1 = self.tournament_selection(items, capacity)
