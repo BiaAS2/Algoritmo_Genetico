@@ -5,7 +5,6 @@ class KnapsackProblem:
         self.capacity = capacity
         self.items = items
 
-    @staticmethod
     def load_from_file(file_path):
         items = []
         try:

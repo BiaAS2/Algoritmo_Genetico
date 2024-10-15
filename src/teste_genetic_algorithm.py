@@ -14,12 +14,12 @@ def run_test(problem, population_size, crossover_rate, mutation_rate, num_genera
         histories.append(fitness_history)
     return np.mean(results), np.mean(histories, axis=0)
 
-def test_and_plot(problem, test_params):
+def test_and_plot(problem, test_params, method_name):
     num_tests = len(test_params)
-    rows = 5
+    rows = math.ceil(num_tests / 3)
     cols = 3
     
-    plt.figure(figsize=(15, 10))
+    plt.figure(figsize=(15, 5 * rows))
 
     for i, params in enumerate(test_params, 1):
         population_size, crossover_rate, mutation_rate, num_generations, selection_method, tournament_size = params
@@ -35,13 +35,12 @@ def test_and_plot(problem, test_params):
         plt.ylabel('Fitness')
         plt.legend()
 
-        print(f"Teste {i}:")
-        print(f"  Método de Seleção: {selection_method}")
+        print(f"Teste {i} ({method_name}):")
         print(f"  Tamanho da População: {population_size}")
         print(f"  Taxa de Cruzamento: {crossover_rate}")
         print(f"  Taxa de Mutação: {mutation_rate}")
         print(f"  Número de Gerações: {num_generations}")
-        if selection_method == 'tournament':
+        if tournament_size:
             print(f"  Tamanho do Torneio: {tournament_size}")
         print(f"  Fitness Médio com Elitismo: {result_with}")
         print(f"  Fitness Médio sem Elitismo: {result_without}")
@@ -56,14 +55,29 @@ def main():
         print("Não foi possível carregar o problema. Encerrando o programa.")
         return
 
-    test_params = [
-        # Testes com Tournament
+    # Testes com o método de seleção 'tournament'
+    """
+    Cria um botão estilizado com texto, cor de fundo e ação personalizados.
+    @param 1 Tamanho da População
+    @param 2 Taxa de Cruzamento
+    @param 3 Taxa de Mutação
+    @param 4 Número de Gerações
+    @param 5 Método de Seleção (Torneio e Roleta)
+
+    """
+    tournament_params = [
         (100, 0.7, 0.01, 100, 'tournament', 3),
         (200, 0.75, 0.05, 150, 'tournament', 5),
         (150, 0.8, 0.1, 200, 'tournament', 4),
         (250, 0.85, 0.03, 120, 'tournament', 6),
-        (180, 0.9, 0.08, 180, 'tournament', 5),
-        # Testes com Roulette
+        (180, 0.9, 0.08, 180, 'tournament', 5)
+    ]
+
+    print("Resultados para seleção por Torneio:")
+    test_and_plot(problem, tournament_params, "Torneio")
+
+    # Testes com o método de seleção 'roulette'
+    roulette_params = [
         (100, 0.7, 0.01, 100, 'roulette', None),
         (200, 0.75, 0.05, 150, 'roulette', None),
         (150, 0.8, 0.1, 200, 'roulette', None),
@@ -71,7 +85,8 @@ def main():
         (180, 0.9, 0.08, 180, 'roulette', None)
     ]
 
-    test_and_plot(problem, test_params)
+    print("Resultados para seleção por Roleta:")
+    test_and_plot(problem, roulette_params, "Roleta")
 
 if __name__ == "__main__":
     main()

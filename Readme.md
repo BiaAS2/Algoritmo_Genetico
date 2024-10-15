@@ -41,7 +41,7 @@ Com base nos testes realizados, o algoritmo genético foi eficaz em encontrar so
 
 - [Beatriz Alves](https://www.linkedin.com/in/beatriz-alves-de-souza-789a84239/)
 - [Bianca Mayra](https://www.linkedin.com/in/bianca-mayra-de-assisaguiar-8b18b0235/)
-- [Luana]()
+- [Luana Aguilar](https://www.linkedin.com/in/luana-aguilar-bb65b7258/)
 - [Lucelho Silva](https://www.linkedin.com/in/lucelhosilva/)
 - [Renato Noronha](https://www.linkedin.com/in/renatonoronha/)
 - [Túlio Inácio](https://www.linkedin.com/in/t%C3%BAlio-in%C3%A1cio-767244276/)
