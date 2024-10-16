@@ -3,3 +3,6 @@ class Item:
         self.name = name
         self.weight = weight
         self.value = value
+
+    def __repr__(self):
+        return f"Item(name='{self.name}', weight={self.weight}, value={self.value})"
