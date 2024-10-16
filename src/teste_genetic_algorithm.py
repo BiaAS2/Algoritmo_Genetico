@@ -4,11 +4,11 @@ from genetic_algorithm import GeneticAlgorithm
 import numpy as np
 import math
 
-def run_test(problem, population_size, crossover_rate, mutation_rate, num_generations, selection_method, tournament_size, elitism, num_runs=5):
+def run_test(problem, population_size, crossover_rate, mutation_rate, num_generations, selection_method, tournament_size, elitism, fitness_metric, num_runs=5):
     results = []
     histories = []
     for _ in range(num_runs):
-        ga = GeneticAlgorithm(problem, population_size, crossover_rate, mutation_rate, num_generations, selection_method, tournament_size, elitism)
+        ga = GeneticAlgorithm(problem, population_size, crossover_rate, mutation_rate, num_generations, selection_method, tournament_size, elitism, fitness_metric)
         _, best_fitness, fitness_history = ga.run()
         results.append(best_fitness)
         histories.append(fitness_history)
@@ -22,10 +22,10 @@ def test_and_plot(problem, test_params, method_name):
     plt.figure(figsize=(15, 5 * rows))
 
     for i, params in enumerate(test_params, 1):
-        population_size, crossover_rate, mutation_rate, num_generations, selection_method, tournament_size = params
+        population_size, crossover_rate, mutation_rate, num_generations, selection_method, tournament_size, fitness_metric = params
         
-        result_with, history_with = run_test(problem, population_size, crossover_rate, mutation_rate, num_generations, selection_method, tournament_size, True)
-        result_without, history_without = run_test(problem, population_size, crossover_rate, mutation_rate, num_generations, selection_method, tournament_size, False)
+        result_with, history_with = run_test(problem, population_size, crossover_rate, mutation_rate, num_generations, selection_method, tournament_size, True, fitness_metric)
+        result_without, history_without = run_test(problem, population_size, crossover_rate, mutation_rate, num_generations, selection_method, tournament_size, False, fitness_metric)
         
         plt.subplot(rows, cols, i)
         plt.plot(history_with, label='Com Elitismo')
@@ -40,11 +40,12 @@ def test_and_plot(problem, test_params, method_name):
         print(f"  Taxa de Cruzamento: {crossover_rate}")
         print(f"  Taxa de Mutação: {mutation_rate}")
         print(f"  Número de Gerações: {num_generations}")
+        print(f"  Métrica de Fitness: {fitness_metric}")
         if tournament_size:
             print(f"  Tamanho do Torneio: {tournament_size}")
-        print(f"  Fitness Médio com Elitismo: {result_with}")
-        print(f"  Fitness Médio sem Elitismo: {result_without}")
-        print()
+            print(f"  Fitness Médio com Elitismo: {result_with}")
+            print(f"  Fitness Médio sem Elitismo: {result_without}")
+            print()
 
     plt.tight_layout()
     plt.show()
@@ -56,21 +57,12 @@ def main():
         return
 
     # Testes com o método de seleção 'tournament'
-    """
-    Cria um botão estilizado com texto, cor de fundo e ação personalizados.
-    @param 1 Tamanho da População
-    @param 2 Taxa de Cruzamento
-    @param 3 Taxa de Mutação
-    @param 4 Número de Gerações
-    @param 5 Método de Seleção (Torneio e Roleta)
-
-    """
     tournament_params = [
-        (100, 0.7, 0.01, 100, 'tournament', 3),
-        (200, 0.75, 0.05, 150, 'tournament', 5),
-        (150, 0.8, 0.1, 200, 'tournament', 4),
-        (250, 0.85, 0.03, 120, 'tournament', 6),
-        (180, 0.9, 0.08, 180, 'tournament', 5)
+        (100, 0.7, 0.01, 100, 'tournament', 3, "maximize_benefit_weight"),
+        (200, 0.75, 0.05, 150, 'tournament', 5, "maximize_benefit"),
+        (150, 0.8, 0.1, 200, 'tournament', 4, "maximize_benefit_weight"),
+        (250, 0.85, 0.03, 120, 'tournament', 6, "maximize_benefit"),
+        (180, 0.9, 0.08, 180, 'tournament', 5, "maximize_benefit_weight")
     ]
 
     print("Resultados para seleção por Torneio:")
@@ -78,11 +70,11 @@ def main():
 
     # Testes com o método de seleção 'roulette'
     roulette_params = [
-        (100, 0.7, 0.01, 100, 'roulette', None),
-        (200, 0.75, 0.05, 150, 'roulette', None),
-        (150, 0.8, 0.1, 200, 'roulette', None),
-        (250, 0.85, 0.03, 120, 'roulette', None),
-        (180, 0.9, 0.08, 180, 'roulette', None)
+        (100, 0.7, 0.01, 100, 'roulette', None, "maximize_benefit_weight"),
+        (200, 0.75, 0.05, 150, 'roulette', None, "maximize_benefit"),
+        (150, 0.8, 0.1, 200, 'roulette', None, "maximize_benefit_weight"),
+        (250, 0.85, 0.03, 120, 'roulette', None, "maximize_benefit"),
+        (180, 0.9, 0.08, 500, 'roulette', None, "maximize_benefit_weight")
     ]
 
     print("Resultados para seleção por Roleta:")
