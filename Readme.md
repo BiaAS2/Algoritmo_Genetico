@@ -27,7 +27,13 @@ Além disso, realizamos testes comparando os resultados **com** e **sem elitismo
 
 ### Gráficos das Evoluções
 
-![Gráficos](./img/)
+#### Graficos do Torneio
+
+![Gráficos](./src/assets/img/grafico%20do%20torneio.png)
+
+#### Graficos da Roleta
+
+![Gráficos](./src/assets/img/grafico%20da%20roleta.png)
 
 ## Conclusão
 
