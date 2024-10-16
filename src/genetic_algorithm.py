@@ -43,6 +43,7 @@ class GeneticAlgorithm:
 
             fitness_history.append(best_fitness)
 
+
         return best_solution, best_fitness, fitness_history
 
     def generate_initial_population(self):
