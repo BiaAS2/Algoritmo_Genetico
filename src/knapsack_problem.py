@@ -19,7 +19,6 @@ class KnapsackProblem:
         self.capacity = capacity
         self.items = items
 
-    @staticmethod
     def load_from_file(file_path):
         """
         Carrega os dados do problema da mochila a partir de um arquivo.

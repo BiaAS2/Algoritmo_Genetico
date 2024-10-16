@@ -3,6 +3,9 @@ from knapsack_problem import KnapsackProblem
 from genetic_algorithm import GeneticAlgorithm
 import numpy as np
 import math
+import pandas as pd
+from openpyxl import load_workbook
+from openpyxl.styles import Alignment
 
 def run_test(problem, population_size, crossover_rate, mutation_rate, num_generations, selection_method, tournament_size, elitism, fitness_metric, num_runs=5):
     """
@@ -42,12 +45,13 @@ def test_and_plot(problem, test_params, method_name):
         method_name (str): Nome do método de seleção sendo testado.
 
     Returns:
-        None: Esta função não retorna nada, mas gera um gráfico e imprime resultados.
+        list: Lista com os resultados coletados.
     """
     num_tests = len(test_params)
     rows = math.ceil(num_tests / 3)
     cols = 3
-    
+    results_table = []
+
     plt.figure(figsize=(15, 5 * rows))
 
     for i, params in enumerate(test_params, 1):
@@ -72,12 +76,39 @@ def test_and_plot(problem, test_params, method_name):
         print(f"  Métrica de Fitness: {fitness_metric}")
         if tournament_size:
             print(f"  Tamanho do Torneio: {tournament_size}")
-        print(f"  Fitness Médio com Elitismo: {result_with}")
-        print(f"  Fitness Médio sem Elitismo: {result_without}")
+        print(f"  Fitness Médio com Elitismo: {result_with:.4f}")
+        print(f"  Fitness Médio sem Elitismo: {result_without:.4f}")
         print()
+
+        # Armazenar resultados na lista
+        results_table.append((i, selection_method, crossover_rate, mutation_rate, population_size, num_generations, result_with, result_without))
 
     plt.tight_layout()
     plt.show()
+
+    return results_table
+
+def save_results_to_excel(results, filename='Resultados_Torneio_Roleta.xlsx'):
+    """Salva os resultados dos testes em um arquivo Excel e centraliza o conteúdo."""
+    headers = ['Teste', 'Método', 'Crossover', 'Mutação', 'População', 'Gerações', 'Média com Elitismo', 'Média sem Elitismo']
+
+    # Cria um DataFrame a partir dos resultados
+    df = pd.DataFrame(results, columns=headers)
+
+    # Salva o DataFrame em um arquivo Excel sem index
+    df.to_excel(filename, index=False)
+
+    # Carrega o workbook criado
+    workbook = load_workbook(filename)
+    sheet = workbook.active
+
+    # Centraliza o conteúdo de todas as células
+    for row in sheet.iter_rows():
+        for cell in row:
+            cell.alignment = Alignment(horizontal='center', vertical='center')
+
+    # Salva o arquivo Excel com as alterações de estilo
+    workbook.save(filename)
 
 def main():
     """
@@ -90,9 +121,10 @@ def main():
     Returns:
         None: Esta função não retorna nada, mas gera gráficos e imprime resultados.
     """
-    problem = KnapsackProblem.load_from_file("../data/instancia.csv")
-    if problem is None:
-        print("Não foi possível carregar o problema. Encerrando o programa.")
+    try:
+        problem = KnapsackProblem.load_from_file("../data/instancia.csv")
+    except Exception as e:
+        print(f"Erro ao carregar o problema: {e}")
         return
 
     # Testes com o método de seleção 'tournament'
@@ -105,7 +137,7 @@ def main():
     ]
 
     print("Resultados para seleção por Torneio:")
-    test_and_plot(problem, tournament_params, "Torneio")
+    results_tournament = test_and_plot(problem, tournament_params, "Torneio")
 
     # Testes com o método de seleção 'roulette'
     roulette_params = [
@@ -117,7 +149,13 @@ def main():
     ]
 
     print("Resultados para seleção por Roleta:")
-    test_and_plot(problem, roulette_params, "Roleta")
+    results_roulette = test_and_plot(problem, roulette_params, "Roleta")
+
+    # Combine os resultados para salvar
+    all_results = results_tournament + results_roulette
+
+    # Salve todos os resultados em um arquivo Excel
+    save_results_to_excel(all_results, "Resultados_Torneio_Roleta.xlsx")
 
 if __name__ == "__main__":
     main()
