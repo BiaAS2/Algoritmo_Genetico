@@ -26,3 +26,4 @@ class Item:
             str: Uma string representando o Item no formato "Item(name='nome', weight=peso, value=valor)".
         """
         return f"Item(name='{self.name}', weight={self.weight}, value={self.value})"
+    
