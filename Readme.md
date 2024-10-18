@@ -4,6 +4,10 @@
 
 Este projeto implementa um Algoritmo Genético para resolver o Problema da Mochila, que consiste em determinar a melhor combinação de itens a serem incluídos na mochila, respeitando a capacidade da mochila.
 
+## Documentação
+
+- BAIXAR PDF -> [ALGORITMO GENÉTICO](./docs/Algoritmo%20Genético.pdf)
+
 ## Funcionalidades
 
 - Leitura das instâncias a partir de arquivos CSV;
